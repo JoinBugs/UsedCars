@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <link href="~/css/index.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app" v-cloak>
+    <v-app id="inspire">
+        <div>
+        <v-toolbar flat color="white">
+            <v-toolbar-title>Used Cars</v-toolbar-title>
+            <v-divider
+            class="mx-2"
+            inset
+            vertical
+            ></v-divider>
+            <v-spacer></v-spacer>
+            <v-dialog v-model="dialog" max-width="500px">
+            <v-btn slot="activator" color="primary" dark class="mb-2">Add New Car</v-btn>
+            <v-card>
+                <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+                </v-card-title>
+    
+                <v-card-text>
+                <v-container grid-list-md>
+                    <v-layout wrap>
+                    <v-flex xs12 sm6 md4>
+                        <v-text-field disabled v-model.number="editedItem.id" label="Id"></v-text-field>
+                    </v-flex>
+                    <v-flex xs12 sm6 md4>
+                        <v-text-field v-model="editedItem.brand" label="Brand"></v-text-field>
+                    </v-flex>
+                    <v-flex xs12 sm6 md4>
+                        <v-text-field v-model="editedItem.description" label="Description"></v-text-field>
+                    </v-flex>
+                    <v-flex xs12 sm6 md4>
+                        <v-text-field v-model="editedItem.model" label="Model"></v-text-field>
+                    </v-flex>
+                    <v-flex xs12 sm6 md4>
+                        <v-text-field v-model.number="editedItem.year" label="Year"></v-text-field>
+                    </v-flex>
+                    <v-flex xs12 sm6 md4>
+                        <v-text-field v-model.number="editedItem.kilometers" label="Kilometers"></v-text-field>
+                    </v-flex>
+                    <v-flex xs12 sm6 md4>
+                        <v-text-field v-model.number="editedItem.price" label="Price"></v-text-field>
+                    </v-flex>
+                    </v-layout>
+                </v-container>
+                </v-card-text>
+    
+                <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" flat @@click="close">Cancel</v-btn>
+                <v-btn color="blue darken-1" flat @@click="save">Save</v-btn>
+                </v-card-actions>
+            </v-card>
+            </v-dialog>
+        </v-toolbar>
+        <v-data-table
+            :headers="headers"
+            :items="cars"
+            class="elevation-1"
+        >
+            <template slot="items" slot-scope="props">
+            <td>{{ props.item.id }}</td>
+            <td>{{ props.item.brand }}</td>
+            <td>{{ props.item.description }}</td>
+            <td>{{ props.item.model }}</td>
+            <td>{{ props.item.year }}</td>
+            <td>{{ props.item.kilometers }}</td>
+            <td>{{ props.item.price }}</td>
+            <td class="justify-center layout px-0">
+                <v-icon
+                small
+                class="mr-2"
+                @@click="editItem(props.item)"
+                >
+                edit
+                </v-icon>
+                <v-icon
+                small
+                @@click="deleteItem(props.item)"
+                >
+                delete
+                </v-icon>
+            </td>
+            </template>
+            <template slot="no-data">
+            <v-btn color="primary" @@click="initialize">Reset</v-btn>
+            </template>
+        </v-data-table>
+        <v-layout row justify-center>
+        <v-dialog v-model="dialogDelete" persistent max-width="290">
+            <v-card>
+            <v-card-title class="headline">Are you sure about delete this used car?</v-card-title>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" flat @@click="dialogDelete = false">Cancel</v-btn>
+                <v-btn color="green darken-1" flat @@click="onConfirmDeleteItem">Delete</v-btn>
+            </v-card-actions>
+            </v-card>
+        </v-dialog>
+        </v-layout>
+        <v-snackbar
+            v-model="snackbar.snackbar"
+            :color="snackbar.color"
+            :multi-line="false"
+            :timeout="snackbar.timeout"
+            :vertical="false"
+        >
+            {{ snackbar.text }}
+        </v-snackbar>
+        </div>
+    </v-app>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+  <script src="~/js/endpoints.js"></script>
+  <script src="~/js/grid.js"></script>
+</body>
+</html>
