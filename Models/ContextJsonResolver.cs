@@ -8,7 +8,8 @@ namespace UsedCars.Models
 {
     public class ContextJsonResolver : IContextResolver
     {
-        private string sourceString = @"../UsedCards/DataSource/data.json";
+        private string sourceString = @"..\UsedCars\DataSource\data.json";
+        private string source =  @"..\UsedCards\DataSource";
         public List<T> RetrieveData<T>()
         {
             try
