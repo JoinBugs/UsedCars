@@ -19,69 +19,115 @@ namespace UsedCars.DAL
 
         public List<Car> GetCars()
         {
-            return this.context.RetrieveData<Car>();
+            List<Car> cars = null;
+            try
+            {
+                cars = this.context.RetrieveData<Car>();
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            return cars;
         }
 
         public Car GetCarByID(int id)
         {
-            return this.GetCars().Find(car => car.Id == id);
+            Car car = null;
+            try
+            {
+                car = this.GetCars().Find(_car => _car.Id == id);
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            return car;
         }
 
         private int getMajorId()
         {
-            List<Car> cars = this.GetCars();
             int majorCar = -1;
-            foreach(Car car in cars)
-                if(car.Id > majorCar)
-                    majorCar = car.Id;
+            try
+            {
+                List<Car> cars = this.GetCars();
+                foreach(Car car in cars)
+                    if(car.Id > majorCar)
+                        majorCar = car.Id;
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+
             return majorCar;
         }
 
-        public bool InsertCar(Car car)
+        public int InsertCar(Car car)
         {
-            List<Car> cars = this.GetCars();
-            bool success = false;
-            
-            if(this.GetCarByID(car.Id) == null)
-            {
-                car.Id = getMajorId() + 1;
-                cars.Add(car);
-                success = this.context.SaveData<Car>(cars);
-            }
-
-            return success;
-        }
-
-        public bool DeleteCar(int id)
-        {
-            Car car = this.GetCarByID(id);
-            bool success = false;
-
-            if(car != null)
+            int idNewCar = -1;
+            try
             {
                 List<Car> cars = this.GetCars();
-                int index = cars.FindIndex(_car => _car.Id == id);
-                cars.RemoveAt(index);
-                success = this.context.SaveData(cars);
+                
+                if(this.GetCarByID(car.Id) == null)
+                {
+                    idNewCar = getMajorId() + 1;
+                    car.Id = idNewCar;
+                    cars.Add(car);
+                    this.context.SaveData<Car>(cars);
+                }
             }
-            return success;
+            catch(Exception)
+            {
+                throw;
+            }
+
+            return idNewCar;
         }
 
-        public bool UpdateCar(Car car)
+        public int DeleteCar(int id)
         {
-            List<Car> cars = this.GetCars();
-            bool success = false;
-
-            if(this.GetCarByID(car.Id) != null)
+            int index = -1;
+            try
             {
-                int indexCar = cars.FindIndex(_car => _car.Id == car.Id);
-                cars.Remove(cars[indexCar]);
-                cars.Insert(indexCar, car);
-                this.context.SaveData(cars);
-                success = true;
-            }
+                Car car = this.GetCarByID(id);
 
-            return success;
+                if(car != null)
+                {
+                    List<Car> cars = this.GetCars();
+                    index = cars.FindIndex(_car => _car.Id == id);
+                    cars.RemoveAt(index);
+                    this.context.SaveData(cars);
+                }
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            return index;
+        }
+
+        public int UpdateCar(Car car)
+        {
+            int indexCar = -1;
+            try
+            {
+                List<Car> cars = this.GetCars();
+
+                if(this.GetCarByID(car.Id) != null)
+                {
+                    indexCar = cars.FindIndex(_car => _car.Id == car.Id);
+                    cars.Remove(cars[indexCar]);
+                    cars.Insert(indexCar, car);
+                    this.context.SaveData(cars);
+                }
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            return indexCar;
         }
 
         private bool disposed = false;

@@ -7,6 +7,6 @@ namespace UsedCars.Models
     {
         List<T> RetrieveData<T>();
 
-        bool SaveData<T>(List<T> items);
+        void SaveData<T>(List<T> items);
     }
 }

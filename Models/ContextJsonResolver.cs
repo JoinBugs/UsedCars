@@ -18,21 +18,20 @@ namespace UsedCars.Models
             }
             catch(Exception ex)
             {
-                return null;
+                throw new Exception("cannot retrieve data in source file: ", ex);
             }
         }
 
-        public bool SaveData<T>(List<T> items)
+        public void SaveData<T>(List<T> items)
         {
             try
             {
                 string serializeItems = JsonConvert.SerializeObject(items);
                 File.WriteAllText(sourceString, serializeItems);
-                return true;
             }
             catch(Exception ex)
             {
-                return false;
+                throw new Exception("cannot save data in source file: ", ex);
             }
         }
 

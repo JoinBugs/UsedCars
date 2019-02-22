@@ -8,8 +8,8 @@ namespace UsedCars.DAL
     {
          List<Car> GetCars();
          Car GetCarByID(int id);
-         bool InsertCar(Car car);
-         bool DeleteCar(int id);
-         bool UpdateCar(Car car);
+         int InsertCar(Car car);
+         int DeleteCar(int id);
+         int UpdateCar(Car car);
     }
 }

@@ -8,6 +8,7 @@ using UsedCars.Models;
 using UsedCars.DAL;
 using System.Net;
 using System.Web.Http;
+using System;
 
 namespace UsedCars.Controllers
 {
@@ -26,42 +27,82 @@ namespace UsedCars.Controllers
         [HttpGet]
         public IActionResult GetCars()
         {
-            return Ok(this.serviceCar.GetCars().ToList());
+            IActionResult result;
+            try
+            {
+                result = Ok(this.serviceCar.GetCars().ToList());
+            }
+            catch(Exception ex)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+            return result;
         }
 
         [HttpGet("{id}")]
         public IActionResult GetCar(int id)
         {
-            Car car = this.serviceCar.GetCarByID(id);
-
-            if(car == null)
-                return NotFound();
-            
-            return Ok(car);
+            IActionResult result = NotFound();
+            try
+            {
+                Car car = this.serviceCar.GetCarByID(id);
+                if(car != null)
+                    result = Ok(car);
+                //result = car == null ? NotFound() : Ok(car);
+            }
+            catch(Exception ex)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+            return result;
         }
 
         [HttpPost]
         public IActionResult PostCar(Car car)
         {
-            if(this.serviceCar.InsertCar(car))
-                return CreatedAtAction(nameof(GetCar), new { id = car.Id }, car);
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            IActionResult result;
+            try
+            {
+                this.serviceCar.InsertCar(car);
+                result = CreatedAtAction(nameof(GetCar), new { id = car.Id }, car);
+            }
+            catch(Exception ex)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+            return result;
         }
 
         [HttpPut]
         public IActionResult PutCar(Car car)
         {
-            if(this.serviceCar.UpdateCar(car))
-                return CreatedAtAction(nameof(GetCar), new { id = car.Id }, car);
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            IActionResult result;
+            try
+            {
+                this.serviceCar.UpdateCar(car);
+                result = CreatedAtAction(nameof(GetCar), new { id = car.Id }, car);
+            }
+            catch(Exception ex)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+            return result;
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteCar(int id)
         {
-            if(this.serviceCar.DeleteCar(id))
-                return CreatedAtAction(nameof(GetCar), new { id = id }, id);
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            IActionResult result;
+            try
+            {
+                this.serviceCar.DeleteCar(id);
+                result = CreatedAtAction(nameof(GetCar), new { id = id });
+            }
+            catch(Exception ex)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+            return result;
         }
     }
 }
